@@ -6,6 +6,10 @@ const createBanner = Schema({
   subtitle: String,
   description: String,
   date: Date,
+  image: {
+    data: Buffer,
+    contentType: String,
+  },
 });
 
 const bannerModel = mongoose.model("banner-data", createBanner);

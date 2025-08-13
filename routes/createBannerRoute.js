@@ -4,15 +4,15 @@ const createBannerRoute = express.Router();
 
 createBannerRoute.post("/", async (req, res) => {
   try {
-    const data = {
-      title: req.body.title,
-      subtitle: req.body.subtitle,
-      description: req.body.description,
-      date: new Date(),
-    };
-    const bannerData = bannerModel(data);
+    // const data = {
+    //   title: req.body.title,
+    //   subtitle: req.body.subtitle,
+    //   description: req.body.description,
+    //   date: new Date(),
+    // };
+    // const bannerData = bannerModel(data);
 
-    await bannerData.save();
+    // await bannerData.save();
 
     res.status(201).json({ success: true, message: "Item created succefully" });
   } catch (error) {
@@ -22,7 +22,36 @@ createBannerRoute.post("/", async (req, res) => {
 
 createBannerRoute.get("/", async (req, res) => {
   try {
-    const dataBanner = await bannerModel.find();
+    const itmes = await bannerModel.find();
+    // console.log(itmes)
+    const data = itmes.map((item) => ({
+      id: item._id,
+      title: item.title,
+      suntitle: item.subtitle,
+      description: item.description,
+      image: {
+        data: `data:${item.image.contentType};base64,${item.image.data.toString(
+          "base64"
+        )}`,
+      },
+    }));
+
+    console.log(data, "from data");
+    // const dataBanner = itmes.map((item) => ({
+    //   id: item._id,
+    //   title: item.title,
+    //   subtitle: item.subtitle,
+    //   description: item.description,
+    //   date: item.data,
+    //   image: {
+    //     data: `data:${item.image.contentType};base64,${item.image.data.toString(
+    //       "base64"
+    //     )}`,
+    //   },
+    // }));
+
+    // console.log("dataBanner", dataBanner);
+    res.json(dataBanner);
     res.send(dataBanner);
   } catch (error) {
     console.log(error);
