@@ -42,37 +42,43 @@ const upload = multer({ storage: storage });
 
 // app.use("/banner-post", jsonParser, createBnnerroute);
 
-app.post("/banner-post", upload.single("image"), async (req, res) => {
-  console.log(req.body, "nazia", req.file);
+app.post(
+  "/banner-post",
+  jsonParser,
+  upload.single("image"),
+  async (req, res) => {
+    // console.log(req.body, "nazia", req.file);
+    // res.send(req.body);
 
-  try {
-    // const { title, subtitle, description } = req.body;
-    const image = req.file;
-    // const imageData = fs.readFileSync(req.file.path);
+    try {
+      const { title, subtitle, description } = req.body;
+      const image = req.file;
+      const imageData = fs.readFileSync(req.file.path);
 
-    // const bannerData = bannerModel({
-    //   title,
-    //   subtitle,
-    //   description,
-    //   date: new Date(),
-    //   image: {
-    //     data: imageData,
-    //     contentType: image.mimetype,
-    //   },
-    // });
-    // await bannerData.save();
-    // console.log(image, "body:", title, subtitle, description);
-    res.status(201).json({
-      message: "Banner uploaded successfully",
-      data: req.body,
-      // banner: bannerData,
-    });
-    // res.send(req.file);
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ error: "failed to upload banner" });
+      const bannerData = bannerModel({
+        title,
+        subtitle,
+        description,
+        date: new Date(),
+        image: {
+          data: imageData,
+          contentType: image.mimetype,
+        },
+      });
+      await bannerData.save();
+      console.log(image, "body:", title, subtitle, description);
+      res.status(201).json({
+        message: "Banner uploaded successfully",
+        data: req.file.path,
+        banner: bannerData,
+      });
+      res.send(req.file);
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ error: "failed to upload banner" });
+    }
   }
-});
+);
 
 app.use("/banner-get", createBnnerroute);
 
