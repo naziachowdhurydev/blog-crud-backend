@@ -6,6 +6,7 @@ const createBanner = Schema({
   subtitle: String,
   description: String,
   date: Date,
+  imageName: String,
   image: {
     data: Buffer,
     contentType: String,

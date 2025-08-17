@@ -1,6 +1,10 @@
 const express = require("express");
 const bannerModel = require("../model/bannerModel");
 const createBannerRoute = express.Router();
+const path = require("path");
+const fs = require("fs");
+
+const uploadDiri = path.join(__dirname, "../uploads");
 
 createBannerRoute.post("/", async (req, res) => {
   try {
@@ -11,10 +15,8 @@ createBannerRoute.post("/", async (req, res) => {
     //   date: new Date(),
     // };
     // const bannerData = bannerModel(data);
-
     // await bannerData.save();
-
-    res.status(201).json({ success: true, message: "Item created succefully" });
+    // res.status(201).json({ success: true, message: "Item created succefully" });
   } catch (error) {
     console.log(error);
   }
@@ -27,32 +29,17 @@ createBannerRoute.get("/", async (req, res) => {
     const data = itmes.map((item) => ({
       id: item._id,
       title: item.title,
-      suntitle: item.subtitle,
+      subtitle: item.subtitle,
       description: item.description,
+      imageName: item.imageName,
       image: {
         data: `data:${item.image.contentType};base64,${item.image.data.toString(
           "base64"
         )}`,
       },
     }));
-
-    console.log(data, "from data");
-    // const dataBanner = itmes.map((item) => ({
-    //   id: item._id,
-    //   title: item.title,
-    //   subtitle: item.subtitle,
-    //   description: item.description,
-    //   date: item.data,
-    //   image: {
-    //     data: `data:${item.image.contentType};base64,${item.image.data.toString(
-    //       "base64"
-    //     )}`,
-    //   },
-    // }));
-
-    // console.log("dataBanner", dataBanner);
-    res.json(dataBanner);
-    res.send(dataBanner);
+    // console.log(data);
+    res.send(data);
   } catch (error) {
     console.log(error);
   }
@@ -72,9 +59,16 @@ createBannerRoute.put("/:id", async (req, res) => {
 });
 
 createBannerRoute.delete("/:id", async (req, res) => {
+  console.log(req.params.id);
+  console.log(req.body.imageName);
+
+  const filename = req.body.imageName;
+  const imagePath = path.join(uploadDiri, filename);
+
   try {
     const id = req.params.id;
     await bannerModel.findByIdAndDelete(id);
+    fs.unlink(imagePath, (err) => console.log(err));
     res.send(`Id deleted Successfully ${id}`);
   } catch (error) {
     console.log(error);

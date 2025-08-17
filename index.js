@@ -14,6 +14,7 @@ const port = 3000;
 app.use(cors());
 app.use("/uploads", express.static("uploads"));
 const jsonParser = bodyParser.json();
+app.use(express.json());
 
 require("dotenv").config();
 
@@ -48,18 +49,21 @@ app.post(
   upload.single("image"),
   async (req, res) => {
     // console.log(req.body, "nazia", req.file);
-    // res.send(req.body);
 
+    console.log(req.file.filename);
+    const imagename = req.file.filename;
     try {
       const { title, subtitle, description } = req.body;
       const image = req.file;
       const imageData = fs.readFileSync(req.file.path);
+      // console.log(imagename);
 
       const bannerData = bannerModel({
         title,
         subtitle,
         description,
         date: new Date(),
+        imageName: imagename,
         image: {
           data: imageData,
           contentType: image.mimetype,
@@ -72,7 +76,7 @@ app.post(
         data: req.file.path,
         banner: bannerData,
       });
-      res.send(req.file);
+      // res.send(req.file);
     } catch (error) {
       console.log(error);
       res.status(500).json({ error: "failed to upload banner" });
@@ -85,7 +89,6 @@ app.use("/banner-get", createBnnerroute);
 app.use("/banner-update", jsonParser, createBnnerroute);
 
 app.use("/banner-delete/", createBannerRoute);
-
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
