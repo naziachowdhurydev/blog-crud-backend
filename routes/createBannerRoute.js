@@ -6,22 +6,6 @@ const fs = require("fs");
 
 const uploadDiri = path.join(__dirname, "../uploads");
 
-createBannerRoute.post("/", async (req, res) => {
-  try {
-    // const data = {
-    //   title: req.body.title,
-    //   subtitle: req.body.subtitle,
-    //   description: req.body.description,
-    //   date: new Date(),
-    // };
-    // const bannerData = bannerModel(data);
-    // await bannerData.save();
-    // res.status(201).json({ success: true, message: "Item created succefully" });
-  } catch (error) {
-    console.log(error);
-  }
-});
-
 createBannerRoute.get("/", async (req, res) => {
   try {
     const itmes = await bannerModel.find();
